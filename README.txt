@@ -22,6 +22,10 @@ This is a defualt structure of settings file.
 "update_interval" : Interval at which to refresh your email (in seconds)
 "credentials_file" : Filename where your email credentials are stored. 
 
+A "client_secret_file" is already included. However, there are limits to number of requests.
+API Key should not be included for security reasons. Follow "Step-1" at link below to obtain one for yourself.
+https://developers.google.com/gmail/api/quickstart/python#step_1_turn_on_the_api_name
+
 
 CREDENTIALS file structure:
 ----------------------------------
