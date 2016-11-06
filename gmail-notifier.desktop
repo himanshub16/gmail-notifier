@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Gmail notifier
+Comment=Desktop notifications for your Gmail account.
+Exec=/opt/gmail-notifier/21lane.sh
+Icon=/opt/gmail-notifier/icons/icon.png
+Path=/opt/gmail-notifier/
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Utility;Application;
