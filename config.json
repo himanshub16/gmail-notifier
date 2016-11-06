@@ -1,0 +1,5 @@
+{
+    "client_secret_file": "client_secret.json",
+    "update_interval": 600.00,
+    "credentials_file": "credentials.json"
+}
