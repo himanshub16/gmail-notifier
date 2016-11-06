@@ -5,7 +5,12 @@ import os
 import signal
 import json
 import time 
+import webbrowser
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
+gi.require_version('Notify', '0.7')
 from gi.repository import Gtk as gtk
 from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Notify as notify
@@ -17,7 +22,7 @@ APPINDICATOR_ID = 'Gmail notifier'
 userlist = [] 
 
 def main():
-    indicator = appindicator.Indicator.new(APPINDICATOR_ID, os.path.abspath('icon.png'), appindicator.IndicatorCategory.SYSTEM_SERVICES)
+    indicator = appindicator.Indicator.new(APPINDICATOR_ID, gtk.STOCK_INFO , appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     indicator.set_menu(build_menu())
     notify.init(APPINDICATOR_ID)
@@ -35,6 +40,12 @@ def build_menu():
     settings = gtk.MenuItem('Settings')
     settings.connect('activate', show_settings)
     menu.append(settings)
+    accounts = gtk.MenuItem('Manage accounts')
+    accounts.connect('activate', show_accounts)
+    menu.append(accounts)
+    help = gtk.MenuItem('Help')
+    help.connect('activate', show_help)
+    menu.append(help)
     item_quit = gtk.MenuItem('Quit')
     item_quit.connect('activate', quit)
     menu.append(item_quit)
@@ -42,7 +53,13 @@ def build_menu():
     return menu
 
 def show_settings(_):
-    print 'hello'
+    webbrowser.open(notifier.CONFIG_FILE)
+
+def show_accounts(_):
+    webbrowser.open(notifier.CREDENTIALS_FILE)
+
+def show_help(_):
+    webbrowser.open('README.txt')
 
 def refresh(_):
     for user in userlist:
