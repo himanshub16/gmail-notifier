@@ -19,7 +19,6 @@ SETTINGS file structure:
 This is a defualt structure of settings file.
 
 "client_secret_file" : This is the name of the file containing your client secret obtained from Google API Console.
-    For now, an API key is contained with the application.
 "update_interval" : Interval at which to refresh your email (in seconds)
 "credentials_file" : Filename where your email credentials are stored. 
 
