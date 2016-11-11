@@ -38,9 +38,16 @@ class User:
         self.next_sync = self.last_sync + UPDATE_INTERVAL
 
     def authorize(self):
-        self.credentials = backend.get_credentials(self.userId, self.username)
-        self.http = self.credentials.authorize(httplib2.Http())
-        self.service = discovery.build("gmail", "v1", http = self.http)
+        try:
+            self.credentials = backend.get_credentials(self.userId, self.username)
+            self.http = self.credentials.authorize(httplib2.Http())
+            self.service = discovery.build("gmail", "v1", http = self.http)
+        except HttpError:
+            notify.Notification.new("Cannot connect to network", self.userId, APP_ICON).send()
+        except Exception as e:
+            print "Error occured", e
+
+
 
     def getProfile(self):
         profile = backend.GetProfile(service=self.service, user_id=self.userId)
@@ -48,7 +55,10 @@ class User:
             print "Email addresses don't match"
             return None 
         
-        self.historyId = profile["historyId"]
+        try:
+            self.historyId = str(int(profile["historyId"]))
+        except ValueError:
+            self.historyId = "1" 
         print "Profile retrieved for : ", self.userId
 
     def sync(self):
@@ -71,20 +81,24 @@ class User:
     
     def poll_osd_status(self):
         global UPDATE_INTERVAL, APP_ICON
-        n = notify.Notification.new("<b>You have a new email</b>", self.userId, APP_ICON)
+        n = notify.Notification.new("You have a new email", self.userId, APP_ICON)
 
         while self.running_status:
             if time.time() < self.next_sync:
                 time.sleep(1)
                 continue 
-
-            self.sync()
-            self.last_sync = time.time()
-            self.next_sync = self.last_sync + UPDATE_INTERVAL
-            if self.send_osd:
-                n.show()
-                self.send_osd = False
-                self.updateCredentials()
+            try:
+                self.sync()
+                self.last_sync = time.time()
+                self.next_sync = self.last_sync + UPDATE_INTERVAL
+                if self.send_osd:
+                    n.show()
+                    self.send_osd = False
+                    self.updateCredentials()
+            except Exception as e:
+                self.last_sync = time.time()
+                self.next_sync = time.time() + (UPDATE_INTERVAL / 2)
+                print "Error occured", e
 
                
     def updateCredentials(self):       
