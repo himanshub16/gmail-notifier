@@ -37,6 +37,9 @@ def build_menu():
     refresh_all = gtk.MenuItem('Refresh')
     refresh_all.connect('activate', refresh)
     menu.append(refresh_all)
+    open_mails = gtk.MenuItem('Open GMail')
+    open_mails.connect('activate', open_gmail)
+    menu.append(open_mails)
     settings = gtk.MenuItem('Settings')
     settings.connect('activate', show_settings)
     menu.append(settings)
@@ -64,6 +67,10 @@ def show_help(_):
 def refresh(_):
     for user in userlist:
         user.next_sync = time.time()
+
+def open_gmail(_):
+	for user in userlist:
+		webbrowser.open("https://mail.google.com/mail/u/"+user.userId)
 
 def quit(_):
     notify.uninit()
